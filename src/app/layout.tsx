@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
+import ClientServiceWorkerRegister from "@/components/ClientServiceWorkerRegister";
 
 const sans = Open_Sans({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={sans.className}>{children}</body>
+      <ClientServiceWorkerRegister />
     </html>
   );
 }
