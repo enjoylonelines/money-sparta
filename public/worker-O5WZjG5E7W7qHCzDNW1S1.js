@@ -1,0 +1,1 @@
+self.addEventListener("install",(e=>{console.log("Service Worker installing.")})),self.addEventListener("activate",(e=>{console.log("Service Worker activating.")})),self.addEventListener("fetch",(e=>{e.respondWith(caches.match(e.request).then((t=>t||fetch(e.request))))}));

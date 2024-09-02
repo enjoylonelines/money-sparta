@@ -8,8 +8,8 @@ const withPWA = nextPwa({
   register: true,
   skipWaiting: true,
   // disable: process.env.NODE_ENV === 'development'
-  // customWorkerDir: "worker",
-  // runtimeCaching,
+  customWorkerDir: "worker",
+  //runtimeCaching,
 });
 
 const config = withPWA({
