@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
       .from("user")
       .insert([
         {
-          id: crypto.randomUUID(),
+          id: "5022", //crypto.randomUUID(),
           created_at: new Date().toISOString(),
           pushSubscription,
         },

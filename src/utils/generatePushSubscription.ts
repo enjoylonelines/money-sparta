@@ -12,15 +12,6 @@ export const generatePushSubscription = async (
   };
 
   const pushSubscription = await registration.pushManager.subscribe(options);
-  console.log(pushSubscription);
-  try {
-    const res = await fetch("/api/subscribe", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(pushSubscription),
-    });
-    return res.json();
-  } catch {}
+
+  return pushSubscription;
 };
