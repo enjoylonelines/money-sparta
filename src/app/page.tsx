@@ -1,17 +1,24 @@
 "use client";
-import { requestNotificationPermission } from "@/utils/requestNotificationPermission";
-import { sendPushNotification } from "@/utils/sendPushNotification";
+import { generatePushSubscription } from "@/utils/pushSubscription/generatePushSubscription";
+import { saveSubscriptionToDB } from "@/utils/pushSubscription/saveSubscriptionToDB";
+import { sendPushNotification } from "@/utils/pushSubscription/sendPushNotification";
 import { useEffect } from "react";
 
 export default function Home() {
   useEffect(() => {
-    if (
-      Notification.permission === "default" ||
-      Notification.permission === "denied"
-    ) {
-      requestNotificationPermission();
-    }
-  }, []);
+    const process = async () => {
+      try {
+        const permission = await Notification.requestPermission();
+        console.log(permission);
+        const registration = await navigator.serviceWorker.ready;
+        const pushSubscription = await generatePushSubscription(registration);
+        await saveSubscriptionToDB(pushSubscription);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    process();
+  });
 
   return (
     <div className="flex h-screen justify-center items-center flex-col">

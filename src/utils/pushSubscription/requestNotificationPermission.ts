@@ -7,9 +7,6 @@ export async function requestNotificationPermission() {
   if (permission === "granted") {
     console.log("Notification permission granted.");
     try {
-      const registration = await navigator.serviceWorker.ready;
-      const pushSubscription = await generatePushSubscription(registration);
-      await saveSubscriptionToDB(pushSubscription);
     } catch (error) {
       console.log("save error");
       console.log(error);

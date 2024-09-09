@@ -39,9 +39,7 @@ export async function POST(req: NextRequest) {
         badge: "/assets/icons/logo.webp",
       };
 
-      const rawPushSubscription = JSON.parse(
-        { subscription }?.[0].pushSubscription
-      );
+      const rawPushSubscription = JSON.parse(subscription[0].pushSubscription);
 
       const pushSubscription: PushSubscriptionType = {
         endpoint: rawPushSubscription.endpoint,
