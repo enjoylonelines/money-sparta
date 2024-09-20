@@ -3,7 +3,10 @@
 // });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(clients.claim());
+  event.waitUntil(() => {
+    clients.claim();
+    console.log("worker is active");
+  });
 });
 
 self.addEventListener("push", (event) => {

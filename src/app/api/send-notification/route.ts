@@ -1,9 +1,9 @@
-import { createClient } from "@/utils/supabase/server";
+import { generatePushSubscription } from "@/utils/pushSubscription/generatePushSubscription";
 import { NextRequest, NextResponse } from "next/server";
 
 import webPush from "web-push";
 
-const subject = "https://money-sparta.vercel.app";
+const subject = "https://localhost:3000";
 const publicVapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
 const privateVapidKey = process.env.VAPID_PRIVATE_KEY!;
 
@@ -20,46 +20,36 @@ interface PushSubscriptionType {
 
 export async function POST(req: NextRequest) {
   try {
-    const { id } = await req.json();
-    const supabase = createClient();
+    const { pushSubscription }: { pushSubscription: PushSubscriptionType } =
+      await req.json();
 
-    const { data: subscription, error } = await supabase
-      .from("user")
-      .select("pushSubscription")
-      .eq("id", id);
+    const pushSubscriptionObj: PushSubscriptionType = {
+      endpoint: pushSubscription.endpoint,
+      keys: {
+        p256dh: pushSubscription.keys.p256dh,
+        auth: pushSubscription.keys.auth,
+      },
+      expirationTime: null,
+    };
 
-    if (error) {
-      console.error("Supabase error:", error);
-      return NextResponse.json({ message: error.message }, { status: 400 });
-    } else {
-      const notificationPayload = {
-        title: "Hello from PWA",
-        body: "This is a test push notification",
-        icon: "/assets/icons/logo.webp",
-        badge: "/assets/icons/logo.webp",
-      };
+    // 웹 푸시 알림 전송
+    await webPush.sendNotification(
+      pushSubscriptionObj,
+      JSON.stringify({
+        title: "안녕하세요",
+        body: "제가 누군지 궁금하시면 눌러보세요!",
+        link: "https://www.catchfashion.com",
+      }),
+      {
+        TTL: 3600 * 12, // 메시지의 Time-To-Live 설정
+      }
+    );
 
-      const rawPushSubscription = JSON.parse(subscription[0].pushSubscription);
-
-      const pushSubscription: PushSubscriptionType = {
-        endpoint: rawPushSubscription.endpoint,
-        keys: {
-          p256dh: rawPushSubscription.keys.p256dh,
-          auth: rawPushSubscription.keys.auth,
-        },
-        expirationTime: null,
-      };
-
-      await webPush.sendNotification(
-        pushSubscription,
-        JSON.stringify(notificationPayload)
-      );
-      return NextResponse.json({ message: "success" }, { status: 200 });
-    }
+    return NextResponse.json({ message: "success" }, { status: 200 });
   } catch (error) {
-    console.error("Unexpected error:", error);
+    console.error("Error sending notification:", error);
     return NextResponse.json(
-      { message: "An unexpected error occurred" },
+      { message: "failed", error: error },
       { status: 500 }
     );
   }

@@ -1,12 +1,18 @@
 "use client";
 
 import { useEffect } from "react";
-import registerServiceWorker from "@/service-worker-registration";
 
 export default function ClientServiceWorkerRegister() {
   useEffect(() => {
-    registerServiceWorker();
+    if ("serviceWorker" in navigator && "PushManager" in window) {
+      registerServiceWorker();
+      console.log("serviceWorker is ready");
+    }
   }, []);
 
   return null;
+}
+
+export async function registerServiceWorker(): Promise<ServiceWorkerRegistration> {
+  return await navigator.serviceWorker.register("/worker/index.js");
 }

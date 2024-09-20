@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/assets/logo.webp", sizes: "192x192" }],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
